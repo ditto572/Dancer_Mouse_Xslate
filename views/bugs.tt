@@ -1,0 +1,11 @@
+<div id="page">
+  <div id="content">
+
+      <h1>[% title %]</h1>
+
+      <p>Loaded [% count %] cases from [% filename %].</p>
+      <ul>
+        [% list %]
+      </ul>
+  </div>
+</div>
