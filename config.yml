@@ -20,12 +20,17 @@ charset: "UTF-8"
 
 #template: "simple"
 
-template: 
+template: "xslate" 
 engines:
-  template_toolkit:
-    encoding:  'utf8'
-    start_tag: '[%'
-    end_tag:   '%]'
+  xslate:
+    cache_dir: ".xslate_cache/"
+	cache:     "1"
+    extension: "tx"
+	module:
+	  - Text::Xslate::Bridge::TT2Like
+#    encoding:  'utf8'
+#    start_tag: '[%'
+#    end_tag:   '%]'
 
-session: YAML
+session: "YAML"
 
