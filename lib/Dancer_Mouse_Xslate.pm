@@ -3,26 +3,44 @@ use Dancer ':syntax';
 
 our $VERSION = '0.1';
 
-get '/' => sub {
-	    template 'index';
-};
+my $data_file = './notice.txt';
 
 get '/hello/:name' => sub {
     return "Why, hello there " . param('name');
 };
 
-#get '/bugs/' => sub {
-#    my $xml = XML::Simple->new;
-#    my $data = $xml->XMLin($filename);
-#
-#    my $count = 0;
-#    my $list = "";
-#    foreach my $case (@{$data->{cases}->{case}}) {
-#        $list .= "<li><a href='http://bugs.movabletype.org/default.asp?$case->{ixBug}'>$case->{ixBug}</a> $case->{dtOpened}  : " . encode_entities($case->{sTitle}) . "</li>";
-#        $count++;
-#    }
-#    template 'bugs' => {title => 'Cases in Iliad', filename => $filename, count => $count, list => $list};
-#							    
-#};
+get '/' => sub {
+    my $self = shift;
+		    
+    # Open data file(Create file if not exist)
+    my $mode = -f $data_file ? '<' : '+>';
+    open my $data_fh, $mode, $data_file
+        or die "Cannot open $data_file: $!";
+
+    # Read data
+    my $entry_infos = [];
+    while (my $line = <$data_fh>){
+        chomp $line;
+        my @record = split /\t/, $line;
+ 
+	    my $entry_info = {};
+	    $entry_info->{datetime} = $record[0];
+	    $entry_info->{title}    = $record[1];
+	    $entry_info->{message}  = $record[2];
+
+        push @$entry_infos, $entry_info;
+    }
+
+    # Close
+    close $data_fh;
+
+    # Reverse data order
+    @$entry_infos = reverse @$entry_infos;
+
+    # Render index page
+#	$self->render(entry_infos => $entry_infos);
+    template 'login', {entry_infos => $entry_infos};
+
+};
 
 true;
